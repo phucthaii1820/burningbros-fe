@@ -67,9 +67,20 @@ const Product = ({ data, handleEditProduct }: ProductProps) => {
             <Typography
               variant="h6"
               sx={{
+                p: 0.5,
                 userSelect: 'none',
+                borderRadius: '8px',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                '&:hover': {
+                  backgroundColor: theme.palette.grey[100],
+                },
+                '&:active': {
+                  backgroundColor: theme.palette.grey[200],
+                },
               }}
-              onDoubleClick={() => {
+              onClick={() => {
                 setEdit(true)
               }}
             >
@@ -80,6 +91,7 @@ const Product = ({ data, handleEditProduct }: ProductProps) => {
           <Typography
             variant="body2"
             sx={{
+              p: 0.5,
               userSelect: 'none',
             }}
           >

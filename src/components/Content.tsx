@@ -1,26 +1,16 @@
 import { Box, Divider, Typography } from '@mui/material'
 import React from 'react'
 import ItemList from 'components/ItemList'
-import { useQueries } from 'react-query'
-import { getProductsByCategory } from 'api/products'
 import { theme } from 'theme/theme.config'
+import { IProduct } from 'types/product'
 
-const Content = () => {
-  const [{ data: smartphoneData }, { data: laptopData }, { data: fragranceData }] = useQueries([
-    {
-      queryKey: ['getProductsByCategory', 'smartphones'],
-      queryFn: () => getProductsByCategory('smartphones'),
-    },
-    {
-      queryKey: ['getProductsByCategory', 'laptops'],
-      queryFn: () => getProductsByCategory('laptops'),
-    },
-    {
-      queryKey: ['getProductsByCategory', 'fragrances'],
-      queryFn: () => getProductsByCategory('fragrances'),
-    },
-  ])
+interface Props {
+  smartphoneData: IProduct[] | []
+  laptopData: IProduct[] | []
+  fragranceData: IProduct[] | []
+}
 
+const Content = ({ smartphoneData, laptopData, fragranceData }: Props) => {
   return (
     <Box
       mt={4}
@@ -55,9 +45,9 @@ const Content = () => {
           },
         }}
       >
-        <ItemList title="Mobile" products={smartphoneData?.data?.products} />
-        <ItemList title="Desktop" products={laptopData?.data?.products} />
-        <ItemList title="Tablet" products={fragranceData?.data?.products} />
+        <ItemList title="Mobile" products={smartphoneData} category="smartphones" />
+        <ItemList title="Desktop" products={laptopData} category="laptops" />
+        <ItemList title="Tablet" products={fragranceData} category="fragrances" />
       </Box>
     </Box>
   )

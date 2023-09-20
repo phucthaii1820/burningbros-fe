@@ -1,11 +1,10 @@
 import React from 'react'
 
 import { useQueryClient } from 'react-query'
-import { Box, Collapse, IconButton, List, Typography } from '@mui/material'
+import { Box, Collapse, List, Typography } from '@mui/material'
 import Product from 'components/Product'
 import AppIcon from 'components/AppIcon'
 
-import IconDown from 'assets/icons/ic_down.svg'
 import IconRight from 'assets/icons/ic_right.svg'
 import { IGetProductsApiResponse, IProduct } from 'types/product'
 import { theme } from 'theme/theme.config'
@@ -16,9 +15,10 @@ type Updater = (oldData: IGetProductsApiResponse) => IGetProductsApiResponse
 interface ItemListProps {
   title: string
   products: IProduct[]
+  category: string
 }
 
-const ItemList = ({ title, products }: ItemListProps) => {
+const ItemList = ({ title, products, category }: ItemListProps) => {
   const [open, setOpen] = React.useState(false)
   const queryClient = useQueryClient()
 
@@ -27,7 +27,7 @@ const ItemList = ({ title, products }: ItemListProps) => {
   }
 
   const handleEditProduct = (idP: number, titleP: string) => {
-    queryClient.setQueryData<Updater>(['getProductsByCategory', 'smartphones'], (oldData: IGetProductsApiResponse) => {
+    queryClient.setQueryData<Updater>(['getProductsByCategory', category], (oldData: IGetProductsApiResponse) => {
       const newData = oldData?.data?.products.map((item: IProduct) => {
         if (item.id === idP) {
           return {
@@ -62,7 +62,14 @@ const ItemList = ({ title, products }: ItemListProps) => {
           },
         }}
       >
-        <IconButton onClick={handleClick}>{open ? <AppIcon src={IconDown} /> : <AppIcon src={IconRight} />}</IconButton>
+        <AppIcon
+          src={IconRight}
+          sx={{
+            margin: '16px',
+            userSelect: 'none',
+            rotate: open ? '90deg' : '0deg',
+          }}
+        />
         <Typography
           variant="h5"
           sx={{

@@ -5,7 +5,7 @@ export const Search = styled(TextField)(() => ({
   '& .MuiOutlinedInput-root': {
     '& fieldset': {
       borderRadius: '25px',
-      padding: '12px, 16px, 12px, 16px',
+      padding: '12px 16px',
       borderColor: theme.palette.grey[200],
     },
     '&:hover fieldset': {
@@ -15,6 +15,7 @@ export const Search = styled(TextField)(() => ({
       borderColor: theme.palette.primary.main,
     },
   },
+  height: '42px',
 }))
 
 export const InputEdit = styled(TextField)(() => ({
