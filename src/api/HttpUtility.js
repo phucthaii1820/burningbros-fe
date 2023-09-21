@@ -1,5 +1,4 @@
 import axios from 'axios'
-import userStore from 'stores/user'
 
 const RequestMethod = {
   Get: 'GET',
@@ -71,7 +70,7 @@ export default class HttpUtility {
         url: restRequest.url,
         headers: {
           'Content-Type': config?.headers?.['Content-Type'] ? config.headers['Content-Type'] : 'application/json',
-          Authorization: userStore.getState().token ? `Bearer ${userStore.getState().token}` : '',
+          Authorization: '',
           ...config?.headers,
         },
       }

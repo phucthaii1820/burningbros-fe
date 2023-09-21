@@ -9,6 +9,8 @@ import IconRight from 'assets/icons/ic_right.svg'
 import { IGetProductsApiResponse, IProduct } from 'types/product'
 import { theme } from 'theme/theme.config'
 
+import localStore from 'stores/store'
+
 // eslint-disable-next-line no-unused-vars
 type Updater = (oldData: IGetProductsApiResponse) => IGetProductsApiResponse
 
@@ -19,6 +21,7 @@ interface ItemListProps {
 }
 
 const ItemList = ({ title, products, category }: ItemListProps) => {
+  const searchValue = localStore((state) => state.searchValue)
   const [open, setOpen] = React.useState(false)
   const queryClient = useQueryClient()
 
@@ -28,6 +31,26 @@ const ItemList = ({ title, products, category }: ItemListProps) => {
 
   const handleEditProduct = (idP: number, titleP: string) => {
     queryClient.setQueryData<Updater>(['getProductsByCategory', category], (oldData: IGetProductsApiResponse) => {
+      const newData = oldData?.data?.products.map((item: IProduct) => {
+        if (item.id === idP) {
+          return {
+            ...item,
+            title: titleP,
+          }
+        }
+        return item
+      })
+
+      return {
+        ...oldData,
+        data: {
+          ...oldData.data,
+          products: newData,
+        },
+      }
+    })
+
+    queryClient.setQueriesData<Updater>(['searchProducts', searchValue], (oldData: IGetProductsApiResponse) => {
       const newData = oldData?.data?.products.map((item: IProduct) => {
         if (item.id === idP) {
           return {

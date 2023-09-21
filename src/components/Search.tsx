@@ -8,9 +8,11 @@ import iconSearchBlur from 'assets/icons/ic_search_blur.svg'
 import CloseIcon from '@mui/icons-material/Close'
 import { theme } from 'theme/theme.config'
 import { ButtonCustom } from 'styles/Button'
-import { useQuery } from 'react-query'
+import { useQuery, useQueryClient } from 'react-query'
 import { searchProducts } from 'api/products'
 import { IGetProductsApiResponse } from 'types/product'
+
+import localStore from 'stores/store'
 
 interface SearchInputProps {
   searchValue: string
@@ -29,31 +31,46 @@ const SearchInput = ({
   setSearchResult,
   refetchQueries,
 }: SearchInputProps) => {
+  const queryClient = useQueryClient()
   const [focused, setFocused] = React.useState(false)
   const [onSearch, setOnSearch] = React.useState(false)
   const [isEnable, setIsEnable] = React.useState(false)
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
+      localStore.setState({
+        searchValue,
+      })
       setOnSearch(true)
       setIsEnable(true)
     }
   }
 
-  useQuery({
-    queryKey: ['searchProducts', searchValue],
-    queryFn: () => searchProducts(searchValue),
-    onSuccess: (data: IGetProductsApiResponse) => {
-      setSearchResult(data)
-      setIsEnable(false)
+  useQuery<IGetProductsApiResponse | []>(
+    ['searchProducts', searchValue],
+    async () => {
+      const dataFromCache = queryClient.getQueryData<IGetProductsApiResponse>(['searchProducts', searchValue])
+
+      if (dataFromCache) {
+        return dataFromCache
+      }
+
+      const response = await searchProducts(searchValue)
+      return response
     },
-    enabled: isEnable,
-  })
+    {
+      enabled: isEnable,
+      onSuccess: (data) => {
+        setSearchResult(data)
+      },
+    },
+  )
 
   React.useEffect(() => {
     if (onSearch) {
       setIsEnable(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchResult])
 
   return (
@@ -74,7 +91,15 @@ const SearchInput = ({
           ),
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton onClick={() => setSearchValue('')} sx={{ visibility: searchValue ? 'visible' : 'hidden' }}>
+              <IconButton
+                onClick={() => {
+                  setSearchValue('')
+                  localStore.setState({
+                    searchValue: '',
+                  })
+                }}
+                sx={{ visibility: searchValue ? 'visible' : 'hidden' }}
+              >
                 <CloseIcon
                   sx={{
                     width: '12px',
@@ -107,9 +132,13 @@ const SearchInput = ({
             ml: 1,
           }}
           onClick={() => {
+            localStore.setState({
+              searchValue: '',
+            })
             setSearchValue('')
             setOnSearch(false)
             refetchQueries()
+            setSearchResult([])
           }}
         >
           Cancel

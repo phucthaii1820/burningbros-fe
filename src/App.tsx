@@ -3,6 +3,7 @@ import { ThemeProvider } from '@mui/material/styles'
 import { ToastContainer } from 'react-toastify'
 import { theme } from 'theme/theme.config'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
 
 import WebRoute from 'router'
 import 'react-toastify/dist/ReactToastify.css'
@@ -28,6 +29,7 @@ function App() {
           pauseOnHover
         />
       </ThemeProvider>
+      <ReactQueryDevtools />
     </QueryClientProvider>
   )
 }
