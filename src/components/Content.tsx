@@ -46,8 +46,8 @@ const Content = ({ smartphoneData, laptopData, fragranceData }: Props) => {
         }}
       >
         <ItemList title="Mobile" products={smartphoneData} category="smartphones" />
-        <ItemList title="Desktop" products={laptopData} category="laptops" />
-        <ItemList title="Tablet" products={fragranceData} category="fragrances" />
+        <ItemList title="Laptops" products={laptopData} category="laptops" />
+        <ItemList title="Fragrances" products={fragranceData} category="fragrances" />
       </Box>
     </Box>
   )
